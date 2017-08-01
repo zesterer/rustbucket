@@ -5,10 +5,22 @@
 
 #![no_std]  //prevent linking of rust std library
 #![feature(lang_items)]
+#![feature(const_fn)]
+#![feature(unique)]
+
+extern crate spin;
+extern crate volatile;
+
+mod vga;
 
 // main kernel function
-#[no_mangle] //disbale name mangling (func can be accessed from asm files)
-pub extern fn kernel_main() {}
+#[no_mangle] //disable name mangling (func can be accessed from asm files)
+pub extern fn kernel_main() {
+    use core::fmt::Write;
+    vga::WRITER.lock().terminal_init();
+
+    loop {}
+}
 
 // called on system panic -- not implemented yet
 #[lang = "eh_personality"]
